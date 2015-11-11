@@ -6,6 +6,11 @@ MERGE_FEEDS=$(MAKE_TOOLS_DIR)/mergeFeeds.py
 # All qsdk targets are located in the 
 vpath qsdk.% $(QSDK_BUILD_DIR)
 
+define done
+	mkdir -p $(QSDK_BUILD_DIR)
+	touch $(QSDK_BUILD_DIR)/$@
+endef
+
 qsdk.%: $(QSDK_BUILD_DIR)
 
 $(QSDK_BUILD_DIR):
@@ -16,9 +21,9 @@ qsdk.merge-feeds: $(FEED_CONFIGS)
 	$(MERGE_FEEDS) -q $(QSDK_DIR) $^ -o $(QSDK_DIR)/feeds.conf.merge-feeds
 	mv $(QSDK_DIR)/feeds.conf $(QSDK_DIR)/feeds.conf.pristine
 	mv $(QSDK_DIR)/feeds.conf.merge-feeds $(QSDK_DIR)/feeds.conf
-	$(MAKE) -C $(QSDK_DIR) package/symlinks V=s
+	$(MAKE) -C $(QSDK_DIR) package/symlinks
 	mv $(QSDK_DIR)/feeds.conf $(QSDK_DIR)/feeds.conf.merge-feeds
 	mv $(QSDK_DIR)/feeds.conf.pristine $(QSDK_DIR)/feeds.conf
-	touch $@
+	$(call done)
 
 qsdk/world: qsdk.merge-feeds
