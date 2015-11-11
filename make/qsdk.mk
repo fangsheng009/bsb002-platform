@@ -17,13 +17,14 @@ $(QSDK_BUILD_DIR):
 	echo $(@D)
 
 qsdk.merge-feeds: $(FEED_CONFIGS)
-	-mv $(QSDK_DIR)/feeds.conf.pristine $(QSDK_DIR)/feeds.conf
-	$(MERGE_FEEDS) -q $(QSDK_DIR) $^ -o $(QSDK_DIR)/feeds.conf.merge-feeds
-	mv $(QSDK_DIR)/feeds.conf $(QSDK_DIR)/feeds.conf.pristine
-	mv $(QSDK_DIR)/feeds.conf.merge-feeds $(QSDK_DIR)/feeds.conf
+	mkdir -p $(QSDK_BUILD_DIR)
+	-mv $(QSDK_BUILD_DIR)/feeds.conf.pristine $(QSDK_DIR)/feeds.conf
+	$(MERGE_FEEDS) -q $(QSDK_DIR) $^ -o $(QSDK_BUILD_DIR)/feeds.conf.merge-feeds
+	mv $(QSDK_DIR)/feeds.conf $(QSDK_BUILD_DIR)/feeds.conf.pristine
+	mv $(QSDK_BUILD_DIR)/feeds.conf.merge-feeds $(QSDK_DIR)/feeds.conf
 	$(MAKE) -C $(QSDK_DIR) package/symlinks
-	mv $(QSDK_DIR)/feeds.conf $(QSDK_DIR)/feeds.conf.merge-feeds
-	mv $(QSDK_DIR)/feeds.conf.pristine $(QSDK_DIR)/feeds.conf
+	mv $(QSDK_DIR)/feeds.conf $(QSDK_BUILD_DIR)/feeds.conf.merge-feeds
+	mv $(QSDK_BUILD_DIR)/feeds.conf.pristine $(QSDK_DIR)/feeds.conf
 	$(call done)
 
 qsdk/world: qsdk.merge-feeds
